@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String     @db.VarChar(63)
+  email     String     @unique
+  password  String     @db.VarChar(127)
+  createAt  DateTime   @default(now()) @db.Timestamp(0)
+  updatedAt DateTime   @default(now()) @db.Timestamp(0)
+  Transfer  Transfer[]
+
+  @@map("users")
+}
+
+model Transfer {
+  id        String   @id @default(cuid())
+  value     Float
+  increment Boolean
+  createAt  DateTime @default(now()) @db.Timestamp(0)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@map("transfers")
+}
